@@ -1,4 +1,4 @@
-ansible-bash-profile
+ansible-role-bash-profile
 =========
 
 This roles setup some basic `.bashrc`. We use it to configure only minimum bashrc for server config.

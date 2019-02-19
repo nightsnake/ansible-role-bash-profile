@@ -5,4 +5,4 @@
     - name: Include vars
       include_vars: vars.yml
   roles:
-    - ansible-bash-profile
+    - ansible-role-bash-profile
