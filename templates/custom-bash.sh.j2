@@ -1,0 +1,63 @@
+# common bash config
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+{% for alias in aliases %}
+{% if alias.color %}
+    alias {{ alias.alias }}='{{ alias.command }} --color=auto'
+{% endif%}
+{% endfor %}
+fi
+
+{% for alias in aliases %}
+{% if not alias.color %}
+    alias {{ alias.alias }}='{{ alias.command }}'
+{% endif%}
+{% endfor %}
+
+{%if bash_completion_enabled %}
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+{% endif %}
+
+# Prompt
+if [ $(id -u) -eq 0 ]; then
+    export PS1="{{ root_prompt }} "
+else
+    export PS1="{{ user_prompt }} "
+fi
+
+# History to syslog
+PROMPT_COMMAND='AT_PROMPT=t'
+function log2syslog
+{
+    [ -z "${AT_PROMPT+set}" ] && return 1
+    COMMAND=$(fc -ln -0|cut -f 2-)
+    if [ -n "${BASH_COMMAND}" ] && [ "${BASH_COMMAND}" != "AT_PROMPT=t" ] && [ "${BASH_COMMAND}" != '[ "$SHLVL" = 1 ]' ]; then
+        if [ "${USER}" != "$(logname)" ]; then
+            LOGUSER="$(logname)@${USER}"
+        fi
+        logger -p local4.notice -t bash -i -- "${LOGUSER:-$USER}: ${PWD} : ${COMMAND}"
+    fi
+    unset AT_PROMPT
+}
+
+{% if log_to_syslog_enabled %}
+trap log2syslog DEBUG
+{% endif %}
+
+HISTCONTROL={{ history_control }}
+shopt -s histappend
+HISTSIZE={{ history_size }}
+HISTFILESIZE={{ history_file_size }}
+
+{% for entries in custom_entries | default() %}
+{{ entries }}
+{% endfor %}

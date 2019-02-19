@@ -1,0 +1,15 @@
+galaxy_info:
+  author: Jan Zoń, Karol Chrapek
+  description: Simple ansible role that setup some bashrc option
+  company: Novomatic Technologies Poland
+
+  license: Apache v2
+
+  min_ansible_version: 2.5
+
+  galaxy_tags:
+  - bashrc
+  - bash
+  - profile
+
+dependencies: []

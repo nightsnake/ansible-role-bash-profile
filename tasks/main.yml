@@ -1,0 +1,31 @@
+---
+# tasks file for bash-profile
+- name: Put new bashrcs snippets in profile
+  template:
+    src: custom-bash.sh.j2
+    dest: '{{ item }}'
+    owner: root
+    group: root
+    mode: 0444
+  loop:
+    - /etc/profile.d/custom-bash.sh
+    - /etc/skel/.bashrc
+- name: Modify existing users
+  block:
+  - name: Find path for user
+    shell: >
+      getent passwd {{ item }} | cut -d : -f 6
+    check_mode: no
+    changed_when: False
+    register: users_path
+    loop: '{{ affected_users }}'
+
+  - name: Overwrite existing .bashrcs
+    copy:
+      remote_src: True
+      src: /etc/skel/.bashrc
+      dest: '{{ item.stdout }}'
+      backup: yes
+    loop: '{{ users_path.results }}'
+  when:
+    - affected_users is defined
