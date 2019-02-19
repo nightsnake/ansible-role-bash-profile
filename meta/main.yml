@@ -1,6 +1,7 @@
 galaxy_info:
   author: Jan Zoń, Karol Chrapek
   description: Simple ansible role that setup some bashrc option
+  role_name: bash-profile
   company: Novomatic Technologies Poland
 
   license: Apache v2
