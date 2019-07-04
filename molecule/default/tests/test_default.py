@@ -5,20 +5,12 @@ testinfra_hosts = AnsibleRunner(
                     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
 
-@pytest.mark.parametrize("common_pkgs", [
-    "curl",
-    "tcpdump",
-    "git",
-    "htop"
+@pytest.mark.parametrize('file, content', [
+  ("root/.bashrc", "alias ls='ls  --color=auto'"),
+  ("/etc/skel/.bashrc", "HISTSIZE=1000")
 ])
-def test_common(host, common_pkgs):
-    c = host.package(common_pkgs)
-    assert c.is_installed
+def test_files(host, file, content):
+    file = host.file(file)
 
-
-@pytest.mark.parametrize("extra_pkgs", [
-    "nmap"
-])
-def test_extra(host, extra_pkgs):
-    c = host.package(extra_pkgs)
-    assert c.is_installed
+    assert file.exists
+    assert file.contains(content)
