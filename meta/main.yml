@@ -1,3 +1,4 @@
+---
 galaxy_info:
   author: Jan Zoń, Karol Chrapek
   description: Simple ansible role that setup some bashrc option

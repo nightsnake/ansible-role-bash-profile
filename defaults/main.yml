@@ -10,15 +10,15 @@ aliases:
   - { alias: "l", command: "ls -CF", color: False }
   - { alias: "lz", command: "ls -Z", color: False }
 
-#list of exisiting users that .bashrc would be changed
+# list of exisiting users that .bashrc would be changed
 affected_users:
   - root
   - ansible
 
 bash_completion_enabled: True
-#To disable commands logging to syslog set below flag to false.
+# To disable commands logging to syslog set below flag to false.
 log_to_syslog_enabled: False
-#history_control values: ignorespace, ignoredups, ignoreboth
+# history_control values: ignorespace, ignoredups, ignoreboth
 history_control: ignoreboth
 history_size: 1000
 history_file_size: 2000
@@ -28,4 +28,4 @@ history_file_size: 2000
 root_prompt: '[\[\e[31m\]\t\[\e[m\]] \u@\[\e[36m\]\h\[\e[m\]:\w \[\e[31m\]\\$\[\e[m\]'
 user_prompt: '[\[\e[32m\]\t\[\e[m\]] \u@\[\e[36m\]\h\[\e[m\]:\w \[\e[32m\]\\$\[\e[m\]'
 # custom_entries allows to add additional line not included in role.
-#custom_entries:
+# custom_entries:

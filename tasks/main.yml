@@ -12,20 +12,20 @@
     - /etc/skel/.bashrc
 - name: Modify existing users
   block:
-  - name: Find path for user
-    shell: >
-      getent passwd {{ item }} | cut -d : -f 6
-    check_mode: no
-    changed_when: False
-    register: users_path
-    loop: '{{ affected_users }}'
+    - name: Find path for user
+      shell: >
+        getent passwd {{ item }} | cut -d : -f 6
+      check_mode: no
+      changed_when: False
+      register: users_path
+      loop: '{{ affected_users }}'
 
-  - name: Overwrite existing .bashrcs
-    copy:
-      remote_src: True
-      src: /etc/skel/.bashrc
-      dest: '{{ item.stdout }}'
-      backup: yes
-    loop: '{{ users_path.results }}'
+    - name: Overwrite existing .bashrcs
+      copy:
+        remote_src: True
+        src: /etc/skel/.bashrc
+        dest: '{{ item.stdout }}'
+        backup: yes
+      loop: '{{ users_path.results }}'
   when:
     - affected_users is defined
