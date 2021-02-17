@@ -22,10 +22,11 @@ log_to_syslog_enabled: False
 history_control: ignoreboth
 history_size: 1000
 history_file_size: 2000
+history_time_format: '"%Y/%m/%d %T "'
 # Different colored prompt: [time] login@host:/path [$,#].
 # Root prompt has red time and # character
 # User prompt has green time and $ character
-root_prompt: '[\[\e[31m\]\t\[\e[m\]] \u@\[\e[36m\]\h\[\e[m\]:\w \[\e[31m\]\\$\[\e[m\]'
-user_prompt: '[\[\e[32m\]\t\[\e[m\]] \u@\[\e[36m\]\h\[\e[m\]:\w \[\e[32m\]\\$\[\e[m\]'
+root_prompt: '\[\033[0;31m\]┌[ \[\033[1;31m\]\H\[\033[1;34m\]: \w \[\033[0;31m\]]\[\033[0m\]\n\[\033[0;31m\]└[ \[\033[1;34m\](\t)\[\033[0m\]\[\033[1;31m\]$(__git__branch)\[\033[0;31m\] \[\033[0m\]\[\033[1;31m\]\u\[\033[0;31m\] ]-> \[\033[0m\]'
+user_prompt: '\[\033[0;32m\]┌[ \[\033[1;32m\]\H\[\033[1;34m\]: \w \[\033[0;32m\]]\[\033[0m\]\n\[\033[0;32m\]└[ \[\033[1;34m\](\t)\[\033[0m\]\[\033[1;31m\]$(__git__branch)\[\033[0;31m\] \[\033[0m\]\[\033[1;32m\]\u\[\033[0;32m\] ]-> \[\033[0m\]'
 # custom_entries allows to add additional line not included in role.
 # custom_entries:

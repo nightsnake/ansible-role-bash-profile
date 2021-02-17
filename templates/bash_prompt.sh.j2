@@ -1,4 +1,11 @@
 # common bash config
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+force_color_prompt=yes
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -27,8 +34,18 @@ fi
 
 {% endif %}
 
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;36m\]\u\[\033[00m\]@\[\033[01;32m\]$(hostname -f)\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='\u@$(hostname -f):\w\$ '
+fi
+
+function __git__branch {
+	git branch 2> /dev/null| sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
 # Prompt
-if [ $(id -u) -eq 0 ]; then
+if [[ ${EUID} == 0 ]] ; then
     export PS1="{{ root_prompt }} "
 else
     export PS1="{{ user_prompt }} "
@@ -53,10 +70,19 @@ function log2syslog
 trap log2syslog DEBUG
 {% endif %}
 
-HISTCONTROL={{ history_control }}
+unset use_color safe_term match_lhs
+PATH=$PATH:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 shopt -s histappend
+shopt -s checkwinsize
+HISTCONTROL={{ history_control }}
 HISTSIZE={{ history_size }}
 HISTFILESIZE={{ history_file_size }}
+HISTTIMEFORMAT={{ history_time_format }}
+
+# Alias definitions.
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
 
 {% for entries in custom_entries | default() %}
 {{ entries }}
