@@ -1,5 +1,15 @@
 ---
 # tasks file for bash-profile
+- name: Put new bashrcs snippets in user skel
+  template:
+    src: bashrc.j2
+    dest: '{{ item }}'
+    owner: root
+    group: root
+    mode: 0444
+  loop:
+    - /etc/skel/.bashrc
+
 - name: Put new bashrcs snippets in profile
   template:
     src: bash_prompt.sh.j2
@@ -8,8 +18,9 @@
     group: root
     mode: 0444
   loop:
-#    - /etc/profile.d/bash_prompt.sh
-    - /etc/skel/.bashrc
+    - /etc/profile.d/bash_prompt.sh
+
+
 - name: Modify existing users
   block:
     - name: Find path for user
