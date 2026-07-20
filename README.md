@@ -1,18 +1,15 @@
-[![Build Status](https://travis-ci.org/novomatic-tech/ansible-role-bash-profile.svg?branch=master)](https://travis-ci.org/novomatic-tech/ansible-role-bash-profile) ![GitHub](https://img.shields.io/github/license/novomatic-tech/ansible-role-bash-profile.svg?style=flat) [![Ansible Role](https://img.shields.io/ansible/role/37996.svg?style=flat)](https://galaxy.ansible.com/novomatic-tech/bash_profile) [![Ansible Role counter](https://img.shields.io/ansible/role/d/37996.svg?style=flat)](https://galaxy.ansible.com/novomatic-tech/bash_profile)
-
 ansible-role-bash-profile
 =========
 
-This roles setup some basic `.bashrc`. We use it to configure only minimum bashrc for server config.
+This role create a custom .bashrc for users and configure fancy bash prompt
 
 
-Role Variables
---------------
+## Role Variables
 
 All default variables are predefined in defaults/main.yml.
 
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+### Playbook example
 
 ```bash
 ---
@@ -21,12 +18,15 @@ Including an example of how to use your role (for instance, with variables passe
     - bash-profile
 ```
 
-License
--------
+## Requirements
+- Ansible >= 2.25
+- git (in case you want to see the branch)
 
-Apache 2.0
+## License
+MIT
 
-Author Information
-------------------
+## Author
+nightsnake
 
-This role was created in 2019 for Novomatic Technologies Poland purposes.
+## Support
+Please create the issue in case of bugs

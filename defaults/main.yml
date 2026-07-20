@@ -3,31 +3,24 @@
 
 # list of aliases used in bashrc
 aliases:
-  - { alias: "ls", command: "ls ", color: True }
-  - { alias: "grep", command: "grep", color: True }
-  - { alias: "ll", command: "ls -alF", color: False }
-  - { alias: "la", command: "ls -A", color: False }
-  - { alias: "l", command: "ls -CF", color: False }
-  - { alias: "lz", command: "ls -Z", color: False }
+  - { alias: "ls", command: "ls ", color: true }
+  - { alias: "grep", command: "grep", color: true }
+  - { alias: "ll", command: "ls -alF", color: false }
+  - { alias: "la", command: "ls -A", color: false }
+  - { alias: "l", command: "ls -CF", color: false }
+  - { alias: "lz", command: "ls -Z", color: false }
 
 # list of exisiting users that .bashrc would be changed
 affected_users:
   - root
   - ansible
 
-bash_completion_enabled: True
-# To disable commands logging to syslog set below flag to false.
-log_to_syslog_enabled: False
+bash_completion_enabled: true
 # history_control values: ignorespace, ignoredups, ignoreboth
 history_control: ignoreboth
 history_size: 1000
 history_file_size: 2000
 history_time_format: '"%Y/%m/%d %T "'
-# Different colored prompt: [time] login@host:/path [$,#].
-# Root prompt has red time and # character
-# User prompt has green time and $ character
-root_prompt: '\[\033[0;31m\]┌[ \[\033[1;31m\]\H\[\033[1;34m\]: \w \[\033[0;31m\]]\[\033[0m\]\n\[\033[0;31m\]└[ \[\033[1;34m\](\t)\[\033[0m\]\[\033[1;31m\]$(__git__branch)\[\033[0;31m\] \[\033[0m\]\[\033[1;31m\]\u\[\033[0;31m\] ]-> \[\033[0m\]'
-user_prompt: '\[\033[0;32m\]┌[ \[\033[1;32m\]\H\[\033[1;34m\]: \w \[\033[0;32m\]]\[\033[0m\]\n\[\033[0;32m\]└[ \[\033[1;34m\](\t)\[\033[0m\]\[\033[1;31m\]$(__git__branch)\[\033[0;31m\] \[\033[0m\]\[\033[1;32m\]\u\[\033[0;32m\] ]-> \[\033[0m\]'
 # custom_entries allows to add additional line not included in role.
 # custom_entries:
 #user_custom_entries:
