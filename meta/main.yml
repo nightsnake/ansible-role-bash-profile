@@ -1,26 +1,26 @@
 ---
+# meta/main.yml
 galaxy_info:
-  author: Jan Zoń, Karol Chrapek
-  description: Simple ansible role that setup some bashrc option
-  role_name: bash_profile
-  company: Novomatic Technologies Poland
+  author: "nightsnake"
+  name: "ansible-awesome-software"
+  description: "Ansible role for customizing bashrc file"
+  license: "MIT"
+  min_ansible_version: "2.25"
 
-  license: Apache v2
-
-  min_ansible_version: 2.5
   platforms:
-    - name: EL
+    - name: Debian
       versions:
-        - all
-    - name: Fedora
-      versions:
-        - all
+        - bookworm
+        - trixie
     - name: Ubuntu
       versions:
-        - all
-  galaxy_tags:
-    - bashrc
-    - bash
-    - profile
+        - jammy
+        - noble
+        - wily
+    - name: LinuxMint
+      versions:
+        - virginia
+        - wilma
+        - zena
 
-dependencies: []
+  dependencies: []

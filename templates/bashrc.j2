@@ -5,6 +5,26 @@ case $- in
       *) return;;
 esac
 
+force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+        # We have color support; assume it's compliant with Ecma-48
+        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+        # a case would tend to support setf rather than setaf.)
+        color_prompt=yes
+    else
+        color_prompt=
+    fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;36m\]\u\[\033[00m\]@\[\033[01;32m\]$(hostname -f)\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='\u@$(hostname -f):\w\$ '
+fi
+unset color_prompt force_color_prompt
+
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -29,16 +49,41 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
 {% endif %}
 
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;36m\]\u\[\033[00m\]@\[\033[01;32m\]$(hostname -f)\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='\u@$(hostname -f):\w\$ '
-fi
+function __git__branch {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
 
-unset use_color safe_term match_lhs
+function __venv_name {
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        echo "\[\033[1;35m\](${VIRTUAL_ENV##*/})\[\033[0m\]"
+    fi
+}
+
+function __update_ps1 {
+    local cols=${COLUMNS:-80}
+    local dummy=$(printf "%*s" $((cols-1)) " ")
+    
+    if [[ $EUID -eq 0 ]]; then
+        local main_color="\[\033[0;31m\]"
+        local bright_color="\[\033[1;31m\]"
+    else
+        local main_color="\[\033[0;32m\]"
+        local bright_color="\[\033[1;32m\]"
+    fi
+    
+    PS1="${main_color}${dummy}\[\033[0m\]\n"
+    PS1+="${main_color}┌[ ${bright_color}\H${main_color}: \w ${main_color}]\[\033[0m\]\n"
+    PS1+="${main_color}└[ \[\033[1;34m\](\t)\[\033[0m\]\[\033[1;31m\]$(__git__branch)\[\033[0;31m\] \[\033[0m\]$(__venv_name)${bright_color}\u${main_color} ]-> \[\033[0m\]"
+}
+
+PROMPT_COMMAND=__update_ps1
+
+{% if user_custom_entries is defined %}
+    {{ user_custom_entries }}
+{% endif %}
+
 PATH=$PATH:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 shopt -s histappend
 shopt -s checkwinsize
@@ -52,8 +97,13 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-source /etc/profile
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-{% if user_custom_entries is defined %}
-    {{ user_custom_entries }}
-{% endif %}
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+unset use_color safe_term match_lhs
+source /etc/profile

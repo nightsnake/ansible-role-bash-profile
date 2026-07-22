@@ -1,42 +1,51 @@
 ---
-# tasks file for bash-profile
-- name: Put new bashrcs snippets in user skel
-  template:
-    src: bashrc.j2
-    dest: '{{ item }}'
-    owner: root
-    group: root
-    mode: 0444
-  loop:
-    - /etc/skel/.bashrc
-
-- name: Put new bashrcs snippets in profile
-  template:
-    src: bash_prompt.sh.j2
-    dest: '{{ item }}'
-    owner: root
-    group: root
-    mode: 0444
-  loop:
-    - /etc/profile.d/bash_prompt.sh
-
-
-- name: Modify existing users
+- name: Deploy custom .bashrc to users
+  vars:
+    bashrc_content: "{{ lookup('template', 'bashrc.j2') }}"
   block:
-    - name: Find path for user
-      shell: >
-        getent passwd {{ item }} | cut -d : -f 6
-      check_mode: no
-      changed_when: False
-      register: users_path
-      loop: '{{ affected_users }}'
+    - name: Get list of existing users
+      ansible.builtin.getent:
+        database: passwd
+      register: users_db
+      when: affected_users is defined
 
-    - name: Overwrite existing .bashrcs
-      copy:
-        remote_src: True
-        src: /etc/skel/.bashrc
-        dest: '{{ item.stdout }}'
-        backup: yes
-      loop: '{{ users_path.results }}'
-  when:
-    - affected_users is defined
+    - name: Filter existing users
+      ansible.builtin.set_fact:
+        existing_users: "{{ affected_users | select('in', users_db.ansible_facts.getent_passwd.keys() | list) | list }}"
+      when: affected_users is defined
+
+    - name: Deploy .bashrc to existing users
+      ansible.builtin.copy:
+        content: "{{ bashrc_content }}"
+        dest: "{{ users_db.ansible_facts.getent_passwd[item][4] }}/.bashrc"
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: '0644'
+        backup: true
+      loop: "{{ existing_users }}"
+      when:
+        - affected_users is defined
+        - existing_users | length > 0
+        - item != 'root'  # опционально
+      become: true
+
+    - name: Deploy to root separately
+      ansible.builtin.copy:
+        content: "{{ bashrc_content }}"
+        dest: /root/.bashrc
+        owner: root
+        group: root
+        mode: '0644'
+        backup: true
+      when:
+        - affected_users is defined
+        - "'root' in affected_users"
+      become: true
+
+    - name: Warn about non-existent users
+      ansible.builtin.debug:
+        msg: "User {{ item }} does not exist, skipping"
+      loop: "{{ affected_users | difference(existing_users) }}"
+      when:
+        - affected_users is defined
+        - existing_users is defined
