@@ -24,3 +24,4 @@ history_time_format: '"%Y/%m/%d %T "'
 # custom_entries allows to add additional line not included in role.
 # custom_entries:
 #user_custom_entries:
+prompt_command: "${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
